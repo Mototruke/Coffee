@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Капучинофф — Уютная кофейня</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header>
+    <div class="logo"><a href="/"><strong>КАПУЧИНОФФ</strong></a></div>
+    <nav>
+        <a href="/menu">Меню</a>
+        <a href="#about">О нас</a>
+        <a href="#contacts">Контакты</a>
+        <a href="/cart" class="cart-nav-btn">🛒 Корзина ({{ cart_count }})</a>
+    </nav>
+</header>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="flash-banner">
+      {% for msg in messages %}<p>{{ msg }}</p>{% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<div class="hero">
+    <h1>Уютная кофейня у входа в парк</h1>
+    <p>Авторский кофе, домашняя кухня, свежая выпечка и тёплая атмосфера каждый день с 10:00 до 23:00</p>
+    <div class="hero-btns">
+        <a href="/menu" class="btn-primary">Открыть полное меню</a>
+        <a href="#bookModal" class="btn-outline">Забронировать столик</a>
+    </div>
+</div>
+
+<div class="section" id="about">
+    <div class="about-grid">
+        <div>
+            <h2 style="font-size: 2em; margin-top: 0;">Место, куда хочется возвращаться</h2>
+            <p>«Капучинофф» — это семейная кофейня с тёплой и душевной атмосферой. Мы варим кофе на зерне свежей обжарки, готовим сытные завтраки весь день и печём фирменные десерты по домашним рецептам.</p>
+            <p>После прогулки загляните к нам согреться облепиховым чаем или освежиться авторским айс-латте.</p>
+        </div>
+        <img src="/static/interior.webp" alt="Интерьер кофейни" class="about-img">
+    </div>
+</div>
+
+<div class="section" id="menu">
+    <h2 class="section-title">Хиты нашей кофейни</h2>
+    <p class="section-subtitle">Самые популярные позиции среди наших гостей</p>
+    <div class="menu-grid">
+        {% for item in hits %}
+        <div class="card">
+            <div>
+                <img src="{{ item.img_url }}" alt="{{ item.title }}">
+                <h3>{{ item.title }}</h3>
+                <p class="desc">{{ item.description }}</p>
+            </div>
+            <div>
+                <p class="price">{{ item.price }} ₽</p>
+                <form action="/add_to_cart" method="POST">
+                    <input type="hidden" name="title" value="{{ item.title }}">
+                    <input type="hidden" name="price" value="{{ item.price }}">
+                    <button type="submit">Заказать</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="/menu" class="btn-primary" style="background-color: #3b2f2f;">Посмотреть все 15 позиций меню →</a>
+    </div>
+</div>
+
+<footer id="contacts">
+    <h3 style="color: #fff; margin-top: 0;">КАПУЧИНОФФ</h3>
+    <p>Адрес: г. Ижевск, Улица Пушкина, 37</p>
+    <p>Ежедневно с 10:00 до 23:00 | Телефон: +7 (968) 612-33-88</p>
+</footer>
+
+<!-- Модальное окно бронирования на чистом CSS (:target) -->
+<div class="modal" id="bookModal">
+    <div class="modal-content">
+        <a href="#" class="close-btn">&times;</a>
+        <h3 style="margin-top: 0;">Бронирование столика</h3>
+        <form action="/book" method="POST">
+            <label>Ваше имя (только буквы):</label>
+            <input type="text" name="name" required placeholder="Александр" pattern="[А-Яа-яЁёA-Za-z\s\-]+" title="Только буквы, пробел и дефис">
+
+            <label>Телефон (ровно 11 цифр):</label>
+            <input type="tel" name="phone" required placeholder="89991234567" maxlength="11" pattern="\d{11}" title="Введите ровно 11 цифр без пробелов и скобок">
+
+            <div class="row-inputs">
+                <div>
+                    <label>Дата визита:</label>
+                    <input type="date" name="date" required value="{{ today }}" min="{{ today }}">
+                </div>
+                <div>
+                    <label>Время визита:</label>
+                    <input type="time" name="time" required value="19:00" min="10:00" max="22:30">
+                </div>
+            </div>
+            <button type="submit" class="btn-primary" style="width: 100%;">Подтвердить бронь</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

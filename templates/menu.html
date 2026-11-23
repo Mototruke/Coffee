@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Меню — Капучинофф</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header>
+    <div class="logo"><a href="/"><strong>КАПУЧИНОФФ</strong></a></div>
+    <nav>
+        <a href="/">Главная</a>
+        <a href="/menu" style="color: #fff; text-decoration: underline;">Меню</a>
+        <a href="/#contacts">Контакты</a>
+        <a href="/cart" class="cart-nav-btn">🛒 Корзина ({{ cart_count }})</a>
+    </nav>
+</header>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="flash-banner">
+      {% for msg in messages %}<p>{{ msg }}</p>{% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<div class="section">
+    <h1>Полное меню кофейни</h1>
+
+    {% for category_name, items in categories.items() %}
+    <h2 class="category-title">{{ category_name }}</h2>
+    <div class="menu-grid">
+        {% for item in items %}
+        <div class="card">
+            <div>
+                <img src="{{ item.img_url }}" alt="{{ item.title }}">
+                <h3>{{ item.title }}</h3>
+                <p class="desc">{{ item.description }}</p>
+            </div>
+            <div>
+                <p class="price">{{ item.price }} ₽</p>
+                <form action="/add_to_cart" method="POST">
+                    <input type="hidden" name="title" value="{{ item.title }}">
+                    <input type="hidden" name="price" value="{{ item.price }}">
+                    <button type="submit">Заказать</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+
+<footer>
+    <h3 style="color: #fff; margin-top: 0;">КАПУЧИНОФФ</h3>
+    <p>Адрес: г. Ижевск, Улица Пушкина, 37 | Телефон: +7 (968) 612-33-88</p>
+</footer>
+
+</body>
+</html>
